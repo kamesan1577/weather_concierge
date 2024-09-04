@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "weather-concierge"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.112.2"
+uvicorn = "^0.30.6"
+qdrant-client = "^1.11.1"
+langchain = "^0.2.16"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
