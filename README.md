@@ -3,9 +3,10 @@ Weather Conciergeは、AI駆動の分析を使用して天気情報と推奨事�
 
 ## 前提条件
 
-Docker
-Docker Compose
-
+Docker  
+Docker Compose  
+Messaging APIが使えるLINE BOTのアカウント([LINE Developers](https://developers.line.biz/console/)から登録)  
+ngrok(ローカルでデバッグしたい場合)  
 ## 環境セットアップ
 
 1. リポジトリをクローンします：
@@ -40,5 +41,17 @@ FastAPIアプリケーションは http://localhost:8000 で利用可能にな�
 ```bash
 docker-compose down
 ```
+
+5. ngrokを使ったデバッグ  
+ngrokを使ってLINEのサーバーとアプリの通信ができるようにします：
+```bash
+ngrok http 8000
+```
+実行するとフォワーディングされたURLがターミナルに表示されるので、  
+LINE Developersのコンソールのプロバイダー→{作成したチャネル}→Messaging API設定→Webhook設定→Webhook URLに
+```
+https://表示されたURL/callback
+```
+と入力します。
 
 
