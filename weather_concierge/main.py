@@ -47,6 +47,7 @@ def handle_message(event):
 
 
 async def process_message(event):
+    """この関数にLINEに送る処理を書く"""
     print(event)
     if event.type != "message" or event.message.type != "text":
         print("Message type is not text")
