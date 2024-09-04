@@ -11,29 +11,33 @@ class MainChain:
     def __init__(self):
         # self.question_analysis_chain = InputAnalysisChain()
         # self.weather_api_chain = WeatherAPIChain()
+        # self.vector_db_lookup_chain = VectorDBLookupChain()
         # self.response_generation_chain = ResponseGenerationChain()
 
-        self.full_chain = RunnableSequence(
-            [
-                # self.question_analysis_chain,
-                RunnableBranch(
-                    (lambda x: x == "weather", self._weather_chain()),
-                    (lambda x: x == "other", self._general_chain()),
-                ),
-            ]
+        self.full_chain = self._dummy_analysis_chain | RunnableBranch(
+            (lambda x: x["category"] == "weather", self._weather_chain),
+            (lambda x: x["category"] == "other", self._general_chain),
+            self._default_chain,
         )
 
-    def _weather_chain(self):
-        pass  # あとで書く
+    def _dummy_analysis_chain(self, question: dict) -> dict:
+        # FIXME question_analysis_chainを実装したら消す
+        return {"category": "weather"}  # 辞書を返す
+
+    def _weather_chain(self, _):
         # return RunnableSequence(
         #     # DBを叩く
         #     # APIを叩く
         # )
+        return {"response": "weather"}  # FIXME 仮置き
 
-    def _general_chain(self):
-        pass
+    def _general_chain(self, _):
         # return self.response_generation_chain.generate_response()
+        return {"response": "other"}  # FIXME 仮置き
+
+    def _default_chain(self, _):
+        return {"response": "default"}
 
     async def process_query(self, user_question: str) -> dict:
-        result = await self.full_chain.ainvoke(user_question)
-        return {"final_answer": result}
+        result = await self.full_chain.ainvoke({"question": user_question})
+        return {"final_answer": result["response"]}
