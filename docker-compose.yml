@@ -7,6 +7,8 @@ services:
       - "8000:8000"
     depends_on:
       - qdrant
+    env_file:
+      - .env
 
   qdrant:
     image: qdrant/qdrant
