@@ -7,6 +7,8 @@ services:
       - "8000:8000"
     depends_on:
       - qdrant
+    environment:
+      - QDRANT_HOST=qdrant
     env_file:
       - .env
 
@@ -16,6 +18,12 @@ services:
       - "6333:6333"
     volumes:
       - qdrant_storage:/qdrant/storage
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:6333" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   qdrant_storage:

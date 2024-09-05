@@ -1,5 +1,6 @@
 import os
 import asyncio
+import requests
 from fastapi import FastAPI, BackgroundTasks, Header, HTTPException, Request
 from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookHandler
@@ -52,6 +53,7 @@ async def process_message(event):
     if event.type != "message" or event.message.type != "text":
         print("Message type is not text")
         return
+    start_loading(event.source.user_id, 5)
 
     # try:
     result = await main_chain.process_query(event.message.text)
@@ -65,6 +67,23 @@ async def process_message(event):
         print(f"Reply sent: {message}")
     except Exception as e:
         print(f"Error sending reply: {e}")
+
+
+def start_loading(chat_id, loading_seconds):
+    """LINEのローディングアニメーションを表示する"""
+    url = "https://api.line.me/v2/bot/chat/loading/start"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ['CHANNEL_ACCESS_TOKEN']}",
+    }
+    payload = {"chatId": chat_id, "loadingSeconds": loading_seconds}
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code != 202:
+        print(
+            f"Error starting loading animation: {response.status_code}, {response.text}"
+        )
+    else:
+        print("Loading animation started successfully")
 
 
 if __name__ == "__main__":
