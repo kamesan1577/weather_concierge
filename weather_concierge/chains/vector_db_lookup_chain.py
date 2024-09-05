@@ -3,7 +3,7 @@ from langchain.schema.runnable import RunnableSequence
 
 
 class VectorDBLookupChain:
-    """VectorDBから質問に関連する情報を取得するクラス"""
+    """VectorDBから質問に関連する情報を取得するチェーン"""
 
     def __init__(self):
         pass  # あとで書く
