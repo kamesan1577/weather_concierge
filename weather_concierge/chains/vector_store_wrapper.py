@@ -14,7 +14,8 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 
-QDRANT_HOST = os.getenv("QDRANT_HOST")
+#QDRANT_HOST = os.getenv("QDRANT_HOST")
+QDRANT_HOST = "http://localhost"
 
 PORT = 6333
 
@@ -27,7 +28,7 @@ def load_qdrant():
         openai_api_key=OPENAI_API_KEY, openai_api_base=OPENAI_API_BASE
     )
 
-    client = qdrant_client.QdrantClient(host=QDRANT_HOST, port=PORT)
+    client = qdrant_client.QdrantClient(url=f"{QDRANT_HOST}", port=PORT)
 
     collections = client.get_collections().collections
     collection_name = [collection.name for collection in collections]

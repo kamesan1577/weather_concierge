@@ -24,7 +24,7 @@ class MainChain:
         # FIXME question_analysis_chainを実装したら消す
         return {"category": "weather"}  # 辞書を返す
 
-    def _weather_chain(self, _):
+    def _weather_chain(self, question):
         # return RunnableSequence(
         #     # DBを叩く
         #     # APIを叩く
