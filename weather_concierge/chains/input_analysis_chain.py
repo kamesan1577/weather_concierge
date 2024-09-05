@@ -5,7 +5,7 @@ from langchain.schema.runnable import RunnableSequence
 
 
 class InputAnalysisChain:
-    """ユーザーの入力が天気に関する質問かどうかを判定するクラス"""
+    """ユーザーの入力が天気に関する質問かどうかを判定するチェーン"""
 
     def __init__(self):
         prompt = ChatPromptTemplate.from_template(

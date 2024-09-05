@@ -6,7 +6,7 @@ from weather_concierge.chains.response_generation_chain import ResponseGeneratio
 
 
 class MainChain:
-    """質問を受けてから回答までの処理の流れを定義するクラス"""
+    """質問を受けてから回答までの処理の流れを定義するクラス(要はエントリーポイント)"""
 
     def __init__(self):
         # self.question_analysis_chain = InputAnalysisChain()
