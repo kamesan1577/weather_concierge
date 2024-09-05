@@ -10,4 +10,4 @@ class PutVectorDBChain:
     async def process_query(
         self,
     ) -> dict:
-        return  # あとで書く
+

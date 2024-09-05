@@ -53,14 +53,12 @@ async def process_message(event):
         print("Message type is not text")
         return
 
-    try:
-        result = await main_chain.process_query(event.message.text)
-        message = result.get(
-            "final_answer", "申し訳ありません。回答を生成できませんでした。"
-        )
-    except Exception as e:
-        print(f"Error processing query: {e}")
-        message = "申し訳ありません。エラーが発生しました。"
+    # try:
+    result = await main_chain.process_query(event.message.text)
+    message = result.final_answer
+    # except Exception as e:
+    #     print(f"Error processing query: {e}")
+    #     message = "申し訳ありません。エラーが発生しました。"
 
     try:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
