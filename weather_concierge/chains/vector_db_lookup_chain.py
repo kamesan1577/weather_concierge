@@ -68,5 +68,6 @@ class VectorDBLookupChain:
 
     async def search(self, prompt: PromptModel) -> PromptModel:
         context = await self.chain.ainvoke(input=prompt.question)
+        print(context)
         result = PromptModel(question=prompt.question, context=context)
         return result

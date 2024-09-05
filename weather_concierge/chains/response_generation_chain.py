@@ -15,6 +15,7 @@ class ResponseGenerationChain:
         load_dotenv()
         prompt = ChatPromptTemplate.from_template(
             "あなたはプロの天気予報士です。以下の質問に答えてください。\n\nWeatherInfoやContextがある場合は参照してください\n\n"
+            "Contextは参考にした資料です。"
             "Question: {question}\n\n WeatherInfo: {weather_info}\n\n Context: {context}"
         )
         model = ChatOpenAI(
