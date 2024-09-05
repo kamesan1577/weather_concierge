@@ -20,7 +20,7 @@ class ResponseGenerationChain:
         model = ChatOpenAI(
             model="gpt-4o-mini",
             temperature=0,
-            openai_api_base_url=os.environ["OPENAI_API_BASE"],
+            base_url=os.environ["OPENAI_API_BASE"],
         )
         output_parser = StrOutputParser()
 
@@ -28,8 +28,14 @@ class ResponseGenerationChain:
 
     async def generate_response(self, prompt: PromptModel) -> PromptModel:
         result = await self.chain.ainvoke(
-            question=prompt.question,
-            weather_info=prompt.api_response,
-            context=prompt.context,
+            input={
+                "question": prompt.question,
+                "weather_info": prompt.api_response,
+                "context": prompt.context,
+            },
+            # question=prompt.question,
+            # weather_info=prompt.api_response,
+            # context=prompt.context,
         )
+        result = PromptModel(question=prompt.question, response=result)
         return result

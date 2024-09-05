@@ -22,6 +22,7 @@ from langchain.agents import AgentExecutor, create_openai_functions_agent
 import os
 from typing import AsyncIterable, Dict
 from langchain.load import dumps, loads
+from dotenv import load_dotenv
 
 from weather_concierge.chains.models import PromptModel
 
@@ -30,34 +31,27 @@ class VectorDBLookupChain:
     """VectorDBから質問に関連する情報を取得するチェーン"""
 
     def __init__(self):
-        pass  # あとで書く
-
-    async def search(
-        self,
-    ) -> dict:  # TODO ここのプロトタイプは仮
-        return  # あとで書く
-
-    def rag(self, question):
+        load_dotenv()
         # modelの指定。今回はGPT4 miniを採用
         model = ChatOpenAI(
             model="gpt-4o-mini",
             temperature=0,
             streaming=True,
-            openai_api_base="https://api.openai.iniad.org/api/v1/",
+            base_url=os.environ["OPENAI_API_BASE"],
         )
 
         # Embedding modelはOpenAIのものを利用
         embedding_function = OpenAIEmbeddings(
-            openai_api_base="https://api.openai.iniad.org/api/v1/"
+            base_url=os.environ["OPENAI_API_BASE"],
         )
 
         # ベクトルDBの設定。今回はEmbeddingに時間がかかるのであらかじめ用意したcollectionを利用
 
-        qdrant_client = QdrantClient(host="localhost", port=6333)
+        qdrant_client = QdrantClient(host=os.environ["QDRANT_HOST"], port=6333)
         qdrant = Qdrant(
             client=qdrant_client,
             embeddings=embedding_function,
-            collection_name="aws_documents",
+            collection_name="weather_information_collections",
         )
         # retrieverの定義
         retriever = qdrant.as_retriever(
@@ -70,7 +64,9 @@ class VectorDBLookupChain:
         {input}に関連する情報をください。
         """)
         # チェーンの定義
-        description_chain = description_prompt | model | StrOutputParser()
+        self.chain = description_prompt | model | StrOutputParser()
 
-        # チェーンの動作イメージ
-        return description_chain.invoke({"input": question})
+    async def search(self, prompt: PromptModel) -> PromptModel:
+        context = await self.chain.ainvoke(input=prompt.question)
+        result = PromptModel(question=prompt.question, context=context)
+        return result

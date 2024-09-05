@@ -13,7 +13,7 @@ class MainChain:
     def __init__(self):
         self.question_analysis_chain = InputAnalysisChain()
         # self.weather_api_chain = WeatherAPIChain()
-        # self.vector_db_lookup_chain = VectorDBLookupChain()
+        self.vector_db_lookup_chain = VectorDBLookupChain()
         self.response_generation_chain = ResponseGenerationChain()
 
         self.full_chain = self.question_analysis_chain.analyze | RunnableBranch(
@@ -22,18 +22,14 @@ class MainChain:
             self._default_chain,
         )
 
-    def _dummy_analysis_chain(self, question: str) -> AnalysisResultModel:
-        # FIXME question_analysis_chainを実装したら消す
-        return AnalysisResultModel(category="weather")  # 辞書を返す
+    async def _weather_chain(self, prompt: PromptModel) -> PromptModel:
+        data = PromptModel(question=prompt.question)
+        search_result = await self.vector_db_lookup_chain.search(data)
+        response = await self.response_generation_chain.generate_response(search_result)
 
-    def _weather_chain(self, question: str) -> PromptModel:
-        # return RunnableSequence(
-        #     # DBを叩く
-        #     # APIを叩く
-        # )
-        return PromptModel(response="weather")  # FIXME 仮置き
+        return response
 
-    def _general_chain(self, question: str) -> PromptModel:
+    def _general_chain(self, prompt: PromptModel) -> PromptModel:
         # return self.response_generation_chain.generate_response()
         return PromptModel(response="other")  # FIXME 仮置き
 
